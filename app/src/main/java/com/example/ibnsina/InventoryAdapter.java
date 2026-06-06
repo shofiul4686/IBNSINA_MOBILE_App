@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +17,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
     private List<InventoryModel> list;
     private Context context;
-    private DatabaseHelper dbHelper;
     private long lastClickTime = 0;
+    private DatabaseReference mDatabase;
 
     public InventoryAdapter(List<InventoryModel> list) {
         this.list = list;
+        this.mDatabase = FirebaseDatabase.getInstance().getReference("PRODUCTS");
     }
 
     public void updateList(List<InventoryModel> newList) {
@@ -44,7 +44,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        dbHelper = new DatabaseHelper(context);
         View view = LayoutInflater.from(context).inflate(R.layout.item_inventory, parent, false);
         return new ViewHolder(view);
     }
@@ -53,11 +52,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         InventoryModel model = list.get(position);
 
-        if (holder.tvSl != null) holder.tvSl.setText(model.getSl());
+        if (holder.tvSl != null) holder.tvSl.setText(model.getSl()); 
         if (holder.tvCategory != null) holder.tvCategory.setText(model.getCategory());
-        if (holder.tvProductName != null) holder.tvProductName.setText(model.getProductName());
+        if (holder.tvProductName != null) holder.tvProductName.setText(model.getProduct_Name());
         if (holder.tvCode != null) holder.tvCode.setText(model.getCode());
-        if (holder.tvPackSize != null) holder.tvPackSize.setText("Pack size: " + model.getPackSize());
+        if (holder.tvPackSize != null) holder.tvPackSize.setText("Pack size: " + model.getPack_Size());
         
         updateCalculatedFields(holder, model);
 
@@ -82,11 +81,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         });
 
         holder.btnCheckUpdate.setOnClickListener(v -> {
-            if (context instanceof MainActivity && ((MainActivity) context).isLoading()) {
-                holder.btnCheckUpdate.setChecked(!holder.btnCheckUpdate.isChecked());
-                return;
-            }
-
+            // Tick দেওয়ার সময় অন্য টিক দেওয়া যাতে বন্ধ না হয়, তাই isLoading চেকটি সরিয়ে দেওয়া হলো
             if (holder.btnCheckUpdate.isChecked()) {
                 model.setStatus("Checked");
                 holder.itemContainer.setBackgroundColor(Color.parseColor("#C8E6C9"));
@@ -95,7 +90,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
                 model.setExcessQty(holder.etExcessQty.getText().toString());
                 model.setRemark(holder.etRemark.getText().toString());
 
-                sendData(model.getCode(), model.getShortQty(), model.getExcessQty(), model.getRemark(), "Checked");
+                updateFirebaseData(model);
                 if (context instanceof MainActivity) ((MainActivity) context).updateCheckedCount();
             } else {
                 holder.btnCheckUpdate.setChecked(true);
@@ -104,7 +99,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         });
 
         holder.itemContainer.setOnLongClickListener(v -> {
-            if (context instanceof MainActivity && ((MainActivity) context).isLoading()) return true;
             if ("Checked".equalsIgnoreCase(model.getStatus())) {
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Uncheck Item?").setMessage("Do you want to uncheck this item?")
@@ -112,7 +106,12 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
                             model.setStatus("Unchecked");
                             holder.btnCheckUpdate.setChecked(false);
                             holder.itemContainer.setBackgroundColor(Color.WHITE);
-                            sendData(model.getCode(), "", "", "", "Unchecked");
+                            
+                            model.setShortQty("");
+                            model.setExcessQty("");
+                            model.setRemark("");
+                            
+                            updateFirebaseData(model);
                             if (context instanceof MainActivity) ((MainActivity) context).updateCheckedCount();
                         }).setNegativeButton("No", null).show();
                 
@@ -129,34 +128,46 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
 
     private void updateCalculatedFields(ViewHolder holder, InventoryModel model) {
         try {
-            int totalStock = Integer.parseInt(model.getTotalQty().trim());
-            int cartonSize = Integer.parseInt(model.getCartonSize().trim());
-            int calculatedCartonQty = (cartonSize > 0) ? totalStock / cartonSize : 0;
-            int calculatedLooseQty = (cartonSize > 0) ? totalStock % cartonSize : totalStock;
+            if (model == null || holder == null) return;
 
-            holder.tvTotalQty.setText("Total Stock: " + totalStock);
-            holder.tvCartonSize.setText("Crton Size: " + cartonSize);
-            holder.tvCarton.setText("Carton Qty: " + calculatedCartonQty);
-            holder.tvLoose.setText("Loose Qty: " + calculatedLooseQty);
+            double totalStock = 0;
+            String tQty = model.getTotalQty();
+            if (tQty != null && !tQty.isEmpty() && !tQty.equalsIgnoreCase("null")) {
+                totalStock = Double.parseDouble(tQty.trim());
+            }
+            
+            double cartonSize = 0;
+            String cSize = model.getCarton_Size();
+            if (cSize != null && !cSize.isEmpty() && !cSize.equalsIgnoreCase("null")) {
+                cartonSize = Double.parseDouble(cSize.trim());
+            }
+
+            int calcCarton = (cartonSize > 0) ? (int)(totalStock / cartonSize) : 0;
+            int calcLoose = (cartonSize > 0) ? (int)(totalStock % cartonSize) : (int)totalStock;
+
+            if (holder.tvTotalQty != null) holder.tvTotalQty.setText("Total Stock: " + (int)totalStock);
+            if (holder.tvCartonSize != null) holder.tvCartonSize.setText("Crton Size: " + (int)cartonSize);
+            if (holder.tvCarton != null) holder.tvCarton.setText("Carton Qty: " + calcCarton);
+            if (holder.tvLoose != null) holder.tvLoose.setText("Loose Qty: " + calcLoose);
+            
         } catch (Exception e) {
-            holder.tvCarton.setText("Carton Qty: 0");
-            holder.tvLoose.setText("Loose Qty: 0");
+            Log.e("Adapter", "Calculation error: " + e.getMessage());
         }
     }
 
     private void showEditCartonSizeDialog(InventoryModel model, ViewHolder holder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Update Carton Size for " + model.getProductName());
+        builder.setTitle("Update Carton Size for " + model.getProduct_Name());
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        input.setText(model.getCartonSize());
+        input.setText(model.getCarton_Size());
         builder.setView(input);
         builder.setPositiveButton("Update", (dialog, which) -> {
             String newSize = input.getText().toString().trim();
             if (!newSize.isEmpty()) {
-                model.setCartonSize(newSize);
+                model.setCarton_Size(newSize);
                 updateCalculatedFields(holder, model);
-                updateCartonSizeOnServer(model.getCode(), newSize);
+                updateFirebaseData(model);
             }
         }).setNegativeButton("Cancel", null);
         AlertDialog dialog = builder.show();
@@ -166,50 +177,32 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.GRAY);
     }
 
-    private void updateCartonSizeOnServer(String code, String newSize) {
-        if (context instanceof MainActivity) ((MainActivity) context).setLoading(true);
-        try {
-            String url = Config.SCRIPT_URL + "?action=updateCartonSize&code=" + URLEncoder.encode(code, "UTF-8") + "&cartonSize=" + newSize;
-            Volley.newRequestQueue(context).add(new StringRequest(Request.Method.GET, url, res -> {
-                if (context instanceof MainActivity) {
-                    ((MainActivity) context).setLoading(false);
-                    ((MainActivity) context).showBigSuccessDialog();
-                }
-            }, err -> { if (context instanceof MainActivity) ((MainActivity) context).setLoading(false); }));
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void sendData(String code, String s, String e, String r, String status) {
-        if (context instanceof MainActivity) ((MainActivity) context).setLoading(true);
-        
-        // সেশন থেকে ইউজার আইডি ও নাম নেওয়া
+    private void updateFirebaseData(InventoryModel model) {
+        // একাধিক টিক দেওয়ার সুবিধার্থে এখানে setLoading ব্যবহার করা হলো না যাতে UI লক না হয়
         SharedPreferences prefs = context.getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE);
         String userId = prefs.getString("userId", "Unknown");
         String userName = prefs.getString("userName", "Unknown");
 
-        try {
-            String url = Config.SCRIPT_URL + "?action=updateStock"
-                    + "&code=" + URLEncoder.encode(code, "UTF-8")
-                    + "&shortQty=" + URLEncoder.encode(s, "UTF-8")
-                    + "&excessQty=" + URLEncoder.encode(e, "UTF-8")
-                    + "&remark=" + URLEncoder.encode(r, "UTF-8")
-                    + "&status=" + URLEncoder.encode(status, "UTF-8")
-                    + "&userId=" + URLEncoder.encode(userId, "UTF-8")
-                    + "&userName=" + URLEncoder.encode(userName, "UTF-8");
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", model.getStatus());
+        updates.put("shortQty", model.getShortQty());
+        updates.put("excessQty", model.getExcessQty());
+        updates.put("remark", model.getRemark());
+        updates.put("Carton_Size", model.getCarton_Size());
+        updates.put("lastUpdatedBy", userName + " (" + userId + ")");
+        updates.put("lastUpdatedTime", System.currentTimeMillis());
 
-            Volley.newRequestQueue(context).add(new StringRequest(Request.Method.GET, url,
-                    res -> {
-                        if (context instanceof MainActivity) {
-                            ((MainActivity) context).setLoading(false);
-                            ((MainActivity) context).showBigSuccessDialog();
-                        }
-                        dbHelper.deleteUpdate(code);
-                    },
-                    err -> {
-                        if (context instanceof MainActivity) ((MainActivity) context).setLoading(false);
-                        dbHelper.addUpdate(code, s, e, r, status);
-                    }));
-        } catch (Exception ex) { ex.printStackTrace(); }
+        if (model.getFirebaseKey() != null && !model.getFirebaseKey().isEmpty() && model.getCategory() != null) {
+            mDatabase.child(model.getCategory()).child(model.getFirebaseKey()).updateChildren(updates)
+                .addOnSuccessListener(aVoid -> {
+                    if (context instanceof MainActivity) {
+                        ((MainActivity) context).showBigSuccessDialog();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+        }
     }
 
     @Override public int getItemCount() { return list == null ? 0 : list.size(); }

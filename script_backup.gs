@@ -1,12 +1,8 @@
 /**
- * IBN SINA Inventory Management - MASTER SCRIPT
- * Android App Uses: "MOBIL APPS" (Row 2, Status Column L, Tracking N & O)
- * Web View Uses: "ALL STOCK"
- * Carton Size Update: Targets sheet ID 1pfse... Tab: PHARMA
+ * IBN SINA Inventory Management - MASTER SCRIPT (FIXED)
  */
 
 var MAIN_SS_ID = '1UKCJz6vT_N9L-uhhGDVtVVJOVE5CVurzZXJZo167vu8';
-var MASTER_SS_ID = '1pfse25kJEycNL9FWPkXS0oSBcWgQfL2ApWVcChMZ09k'; 
 
 function doGet(e) {
   var action = e.parameter.action;
@@ -15,7 +11,7 @@ function doGet(e) {
     var ss = SpreadsheetApp.openById(MAIN_SS_ID);
     var appSheet = ss.getSheetByName('MOBIL APPS');
 
-    // 1. Android: Fetch Data (Starting from Row 2)
+    // 1. Fetch Inventory Data
     if (action == "getJson") {
       var lastRow = appSheet.getLastRow();
       if (lastRow < 2) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
@@ -24,10 +20,8 @@ function doGet(e) {
       var list = [];
       for (var i = 0; i < data.length; i++) {
         if (data[i][1] != "") {
-          // Robust status check (handles spaces and case sensitivity)
           var rawStatus = String(data[i][11]).trim().toLowerCase();
           var finalStatus = (rawStatus === "checked") ? "Checked" : "Unchecked";
-
           list.push({
             "sl": data[i][12], "category": data[i][0], "code": data[i][1],        
             "productName": data[i][2], "packSize": data[i][3], "totalQty": data[i][4],
@@ -39,88 +33,52 @@ function doGet(e) {
       return ContentService.createTextOutput(JSON.stringify(list)).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 2. Android: Update Stock with User ID & Name Tracking
+    // 2. Login & AutoFill (সঠিক কলাম ইনডেক্স সেট করা হয়েছে)
+    if (action == "login" || action == "getAutoFill") {
+      var searchId = String(e.parameter.userId).trim();
+      var pass = String(e.parameter.password).trim();
+      var credSheet = ss.getSheetByName('Credentials');
+      var credData = credSheet.getDataRange().getValues();
+      
+      for (var i = 1; i < credData.length; i++) {
+        // কলাম A (0) হলো USER ID
+        if (String(credData[i][0]).trim().toLowerCase() == searchId.toLowerCase()) {
+          
+          // লগইন করার সময় পাসওয়ার্ড চেক (কলাম B (1) হলো PASSWORD)
+          if (action == "login" && String(credData[i][1]).trim() != pass) {
+            return ContentService.createTextOutput(JSON.stringify({"success": false, "message": "Wrong Password"})).setMimeType(ContentService.MimeType.JSON);
+          }
+          
+          // সফল হলে নাম (কলাম C-2) ও পদবী (কলাম D-3) পাঠানো হবে
+          return ContentService.createTextOutput(JSON.stringify({
+            "success": true, 
+            "name": String(credData[i][2]), 
+            "designation": String(credData[i][3])
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({"success": false, "message": "User Not Found"})).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 3. Update Stock
     if (action == "updateStock") {
       var code = String(e.parameter.code).trim().toLowerCase();
-      var uId = e.parameter.userId;     
-      var uName = e.parameter.userName; 
-      
       var data = appSheet.getDataRange().getValues();
       for (var i = 1; i < data.length; i++) {
         if (String(data[i][1]).trim().toLowerCase() === code) {
-          appSheet.getRange(i + 1, 9).setValue(e.parameter.shortQty);  // I
-          appSheet.getRange(i + 1, 10).setValue(e.parameter.excessQty); // J
-          appSheet.getRange(i + 1, 11).setValue(e.parameter.remark);    // K
-          appSheet.getRange(i + 1, 12).setValue(e.parameter.status == "Checked" ? "Checked" : ""); // L
-          
-          // User Tracking (Columns N & O)
-          appSheet.getRange(i + 1, 14).setValue(uId);   // N
-          appSheet.getRange(i + 1, 15).setValue(uName); // O
-          
+          appSheet.getRange(i + 1, 9).setValue(e.parameter.shortQty);  
+          appSheet.getRange(i + 1, 10).setValue(e.parameter.excessQty); 
+          appSheet.getRange(i + 1, 11).setValue(e.parameter.remark);    
+          appSheet.getRange(i + 1, 12).setValue(e.parameter.status == "Checked" ? "Checked" : ""); 
+          appSheet.getRange(i + 1, 14).setValue(e.parameter.userId);   
+          appSheet.getRange(i + 1, 15).setValue(e.parameter.userName); 
           return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
         }
       }
       return ContentService.createTextOutput("Not Found").setMimeType(ContentService.MimeType.TEXT);
     }
 
-    // 3. Android: Reset All Data
-    if (action == "resetAll") {
-      var lastRow = appSheet.getLastRow();
-      if (lastRow >= 2) {
-        appSheet.getRange(2, 12, lastRow - 1, 1).clearContent(); // Clear Status (L)
-        appSheet.getRange(2, 9, lastRow - 1, 3).clearContent();  // Clear I, J, K
-        appSheet.getRange(2, 14, lastRow - 1, 2).clearContent(); // Clear N, O
-      }
-      return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-    }
-
-    // 4. Android: Update Carton Size in Target Sheet (Tab: PHARMA)
-    if (action == "updateCartonSize") {
-      var searchCode = String(e.parameter.code).trim().toLowerCase();
-      var newSize = e.parameter.cartonSize;
-      var masterSS = SpreadsheetApp.openById(MASTER_SS_ID);
-      var masterSheet = masterSS.getSheetByName('PHARMA');
-      
-      if (!masterSheet) return ContentService.createTextOutput("Error: PHARMA tab not found").setMimeType(ContentService.MimeType.TEXT);
-      
-      var masterData = masterSheet.getDataRange().getValues();
-      for (var i = 0; i < masterData.length; i++) {
-        var sheetCode = String(masterData[i][1]).trim().toLowerCase();
-        if (sheetCode === searchCode) {
-          masterSheet.getRange(i + 1, 5).setValue(newSize); // Column E
-          return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-        }
-      }
-      return ContentService.createTextOutput("Error: Code not found").setMimeType(ContentService.MimeType.TEXT);
-    }
-
-    // 5. Android: Login & AutoFill
-    if (action == "login" || action == "getAutoFill") {
-      var searchId = e.parameter.userId;
-      var pass = e.parameter.password;
-      var credSheet = ss.getSheetByName('Credentials');
-      var credData = credSheet.getDataRange().getValues();
-      for (var i = 1; i < credData.length; i++) {
-        if (credData[i][0] == searchId) {
-          if (action == "login" && credData[i][3] != pass) continue;
-          return ContentService.createTextOutput(JSON.stringify({
-            "success": true, "name": credData[i][1], "designation": credData[i][2]
-          })).setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({"success": false})).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    // 6. Web App: Serve HTML (Uses "ALL STOCK" internally via template)
-    const template = HtmlService.createTemplateFromFile('Index');
-    template.userId = e.parameter.userId || '';
-    template.userName = e.parameter.username || '';
-    return template.evaluate()
-      .setTitle('Stock View Auto')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-      .setFaviconUrl('https://images.seeklogo.com/logo-png/53/1/ibn-sina-medical-logo-png_seeklogo-536126.png');
-
   } catch (err) {
-    return ContentService.createTextOutput("System Error: " + err.message).setMimeType(ContentService.MimeType.TEXT);
+    return ContentService.createTextOutput("Error: " + err.message).setMimeType(ContentService.MimeType.TEXT);
   }
 }
