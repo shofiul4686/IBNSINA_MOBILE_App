@@ -27,10 +27,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // সেশন চেক
+        // ১. সেশন চেক (নিশ্চিত করা যে সেশন ট্রুলি অ্যাক্টিভ আছে কিনা)
         SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
-        if (prefs.getBoolean("isLoggedIn", false)) {
-            startActivity(new Intent(this, DashboardActivity.class));
+        if (prefs != null && prefs.getBoolean("isLoggedIn", false)) {
+            Intent intent = new Intent(this, DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
             return;
         }
@@ -44,13 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         loginProgressBar = findViewById(R.id.loginProgressBar);
 
-        // অটোফিল লজিক (টাইপ করার সময়)
+        // অটোফিল লজিক (টাইপ করার সময়)
         etUser.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 String id = s.toString().trim().toUpperCase();
                 if (id.length() >= 4) {
-                    fetchAutoFillOnly(id); // শুধু নাম-পদবী নিয়ে আসবে
+                    fetchAutoFillOnly(id); // শুধু নাম-পদবী নিয়ে আসবে
                 } else {
                     etName.setText("");
                     etDesignation.setText("");
@@ -74,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // টাইপ করার সময় শুধু ডাটা ফেচ করার জন্য (লগইন করবে না)
+    // টাইপ করার সময় শুধু ডাটা ফেচ করার জন্য (লগইন করবে না)
     private void fetchAutoFillOnly(String userId) {
         String url = Config.SCRIPT_URL + "?action=getAutoFill&userId=" + userId;
         StringRequest request = new StringRequest(Request.Method.GET, url,
@@ -87,6 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (JSONException e) { e.printStackTrace(); }
                 }, error -> {});
+        
+        request.setShouldCache(false); // নেটওয়ার্ক ক্যাশ বন্ধ করা হলো
         Volley.newRequestQueue(this).add(request);
     }
 
@@ -96,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setText("Checking...");
         btnLogin.setEnabled(false);
 
-        // গুগল স্ক্রিপ্ট এমনভাবে সেট করা যাতে এটি সাকসেস হলে নাম ও পদবীও পাঠায়
         String url = Config.SCRIPT_URL + "?action=login&userId=" + userId + "&password=" + password;
 
         StringRequest loginRequest = new StringRequest(Request.Method.GET, url,
@@ -107,19 +110,22 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(response);
                         if (json.getBoolean("success")) {
-                            // সার্ভার থেকে নাম ও পদবী নিয়ে আসা (যদি অ্যাপে তখনো অটোফিল না হয়ে থাকে)
                             String userName = json.optString("name", etName.getText().toString().trim());
                             String designation = json.optString("designation", etDesignation.getText().toString().trim());
 
-                            // সেশন সেভ করা
-                            SharedPreferences.Editor editor = getSharedPreferences("USER_SESSION", MODE_PRIVATE).edit();
+                            // সেশন নিখুঁতভাবে সেভ করা
+                            SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
                             editor.putBoolean("isLoggedIn", true);
                             editor.putString("userId", userId);
                             editor.putString("userName", userName);
                             editor.putString("designation", designation);
                             editor.apply();
 
-                            startActivity(new Intent(this, DashboardActivity.class));
+                            // ফ্রেশ টাস্ক হিসেবে ড্যাশবোর্ডে যাওয়া (ব্যাকস্ট্যাক ক্লিয়ার করে)
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(this, "আইডি বা পাসওয়ার্ড ভুল!", Toast.LENGTH_SHORT).show();
@@ -133,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
             btnLogin.setText("Login");
             Toast.makeText(this, "সার্ভার কানেকশন এরর!", Toast.LENGTH_SHORT).show();
         });
+
+        loginRequest.setShouldCache(false); // অত্যন্ত গুরুত্বপূর্ণ: লগইনের সময় নেটওয়ার্ক ক্যাশ বন্ধ করা হলো
         Volley.newRequestQueue(this).add(loginRequest);
     }
 }
