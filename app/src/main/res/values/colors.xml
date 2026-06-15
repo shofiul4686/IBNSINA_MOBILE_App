@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent">#03DAC5</color>
-    <color name="bg_light">#F5F7FB</color>
+    <!-- IBN SINA Logo Colors -->
+    <color name="ibnsina_blue">#2E3192</color>
+    <color name="ibnsina_red">#ED1C24</color>
+    
+    <color name="primary">#2E3192</color>
+    <color name="primary_dark">#1B1D63</color>
+    <color name="accent">#ED1C24</color>
+    
+    <color name="bg_light">#F4F7F6</color>
     <color name="white">#FFFFFF</color>
-    <color name="error_red">#FF5252</color>
+    <color name="black">#000000</color>
     <color name="text_main">#212121</color>
+    <color name="text_gray">#757575</color>
 </resources>

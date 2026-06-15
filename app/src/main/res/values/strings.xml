@@ -4,4 +4,16 @@
     <string name="title_activity_inm_menu">InmMenuActivity</string>
     <string name="title_activity_sina_vision_menu">SinaVisionMenuActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Pharma Menu Strings -->
+    <string name="pharma_menu_title">Pharma Menu</string>
+    <string name="stock_report_update">Stock Report Update</string>
+    <string name="stock_report_manual">Stock Report Manual</string>
+    <string name="short_date_tracking">Short Date Tracking</string>
+    <string name="carton_qty_update">Carton QTY Update</string>
+    
+    <!-- Accessibility Descriptions -->
+    <string name="desc_back">Back Button</string>
+    <string name="desc_menu_icon">Menu Icon</string>
+    <string name="desc_go_icon">Go Arrow</string>
 </resources>

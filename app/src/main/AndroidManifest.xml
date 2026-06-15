@@ -22,24 +22,16 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false"
-            android:theme="@style/Theme.IBNSINA" />
-
-        <activity
-            android:name=".PharmaMenuActivity"
-            android:exported="false"
-            android:theme="@style/Theme.IBNSINA" />
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
+        <activity android:name=".DashboardActivity" android:exported="false" />
+        <activity android:name=".PharmaMenuActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".SinaVisionMenuActivity" android:exported="false" />
         <activity android:name=".InmMenuActivity" android:exported="false" />
+        <activity android:name=".CartonUpdateActivity" android:exported="false" />
+        
+        <!-- নতুন অ্যাক্টিভিটি এখানে যোগ করা হলো -->
+        <activity android:name=".DataUploadActivity" android:exported="false" />
 
     </application>
 </manifest>

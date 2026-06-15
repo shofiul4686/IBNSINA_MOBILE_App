@@ -4,79 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#047A35"
-    tools:context=".MainActivity">
+    android:background="#F8F9FA">
 
     <!-- Header Section -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#0091EA"
-        android:gravity="center"
+        android:background="@color/white"
+        android:elevation="4dp"
         android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/logo_ibnsina"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginStart="15dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/ivLogo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
-            <ImageView
-                android:id="@+id/ivLogo"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_marginEnd="15dp"
-                android:src="@drawable/logo_ibnsina" />
-
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:text="The IBN SINA Pharmaceutical Industry PLC"
+                android:textColor="@color/ibnsina_blue"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/times_new_roman"
-                    android:gravity="center"
-                    android:text="The IBN SINA Pharmaceutical Industry PLC"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DINAJPUR DEPOT"
+                android:textColor="@color/text_gray"
+                android:textSize="14sp"
+                android:layout_gravity="center" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/times_new_roman"
-                    android:gravity="center"
-                    android:text="DINAJPUR DEPOT"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/times_new_roman"
-                    android:gravity="center"
-                    android:text="Daily Stock Check"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold|italic" />
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Daily Stock Check"
+                android:textColor="@color/ibnsina_red"
+                android:textSize="17sp"
+                android:textStyle="bold|italic"
+                android:layout_gravity="center" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Rounded Search and Filter Bar -->
+    <!-- Search Section -->
     <androidx.cardview.widget.CardView
         android:id="@+id/searchCard"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:cardCornerRadius="25dp"
-        app:cardElevation="4dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <LinearLayout
@@ -84,45 +86,40 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="4dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/ic_menu_search"
-                app:tint="#888888" />
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="Search products..."
+                android:inputType="text"
+                android:maxLines="1"
                 android:paddingStart="10dp"
-                android:textSize="14sp" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="25dp"
-                android:layout_marginHorizontal="8dp"
-                android:background="#DDDDDD" />
+                android:paddingEnd="10dp"
+                android:textSize="14sp"
+                tools:ignore="Autofill" />
 
             <Spinner
                 android:id="@+id/spinnerFilter"
                 android:layout_width="wrap_content"
-                android:layout_height="45dp" />
+                android:layout_height="48dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Action Buttons Row (Clear Background and Visible) -->
+    <!-- Action Buttons -->
     <LinearLayout
         android:id="@+id/actionLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchCard">
 
         <com.google.android.material.button.MaterialButton
@@ -131,14 +128,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:backgroundTint="#30893F"
-
-            android:textColor="#B81717"
-            android:textSize="11sp"
-            app:cornerRadius="8dp"
-            app:icon="@android:drawable/stat_notify_sync"
-            app:iconPadding="2dp"
-            app:iconTint="#E40A0A" />
+            android:backgroundTint="@color/ibnsina_blue"
+            android:text="Sync"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnResetAll"
@@ -146,14 +140,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:backgroundTint="#0333FD"
+            android:backgroundTint="@color/ibnsina_red"
             android:text="Reset"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            app:cornerRadius="8dp"
-            app:icon="@android:drawable/ic_menu_revert"
-            app:iconPadding="2dp"
-            app:iconTint="#5CE407" />
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrint"
@@ -161,14 +152,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:backgroundTint="#0AFDFDFD"
+            android:backgroundTint="@color/ibnsina_blue"
             android:text="Print"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            app:cornerRadius="8dp"
-            app:icon="@android:drawable/ic_menu_share"
-            app:iconPadding="2dp"
-            app:iconTint="#ED0C0C" />
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalculator"
@@ -176,67 +164,67 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:backgroundTint="#673AB7"
+            android:backgroundTint="#607D8B"
             android:text="Calc"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            app:cornerRadius="8dp"
-            app:icon="@drawable/ic_calculator"
-            app:iconPadding="2dp"
-            app:iconTint="#FFFFFF" />
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:cornerRadius="8dp" />
     </LinearLayout>
 
+    <!-- Main List Container -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/paginationLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/actionLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            android:scrollbars="vertical" />
-
+            android:clipToPadding="false"
+            android:padding="4dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Pagination Bar -->
+    <!-- Footer / Pagination -->
     <LinearLayout
         android:id="@+id/paginationLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="8dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBottomBack"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
-            android:textColor="#1B5E20"
-            android:textSize="11sp"
-            app:icon="@android:drawable/ic_menu_revert"
-            app:iconTint="#1B5E20" />
+            android:textColor="@color/ibnsina_blue"
+            android:textSize="11sp" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="24dp"
-            android:layout_marginHorizontal="2dp"
+            android:layout_marginHorizontal="4dp"
             android:background="#DDDDDD" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrevPage"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Prev"
+            android:textColor="@color/ibnsina_blue"
             android:textSize="11sp" />
 
         <LinearLayout
@@ -245,32 +233,17 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvPageInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="All Items"
-                android:textColor="#333333"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvCheckedCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Checked: 0"
-                android:textColor="#D32F2F"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+            <TextView android:id="@+id/tvPageInfo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ibnsina_blue" android:textSize="11sp" android:textStyle="bold" />
+            <TextView android:id="@+id/tvCheckedCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ibnsina_red" android:textSize="11sp" android:textStyle="bold" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNextPage"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
+            android:textColor="@color/ibnsina_blue"
             android:textSize="11sp" />
     </LinearLayout>
 

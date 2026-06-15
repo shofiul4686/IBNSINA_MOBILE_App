@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- থিমটিকে DayNight থেকে পরিবর্তন করে Light করা হলো -->
     <style name="Theme.IBNSINA" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:statusBarColor">#1B5E20</item>
-
-        <item name="colorPrimary">#1B5E20</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-
-        <!-- ডার্ক মুড ইগনোর করার জন্য -->
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/ibnsina_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/ibnsina_red</item>
+        
+        <!-- Background -->
+        <item name="android:windowBackground">@color/bg_light</item>
+        
+        <!-- Status Bar: White with dark icons for visibility -->
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 

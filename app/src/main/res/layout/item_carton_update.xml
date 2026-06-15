@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tvSl"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#555" />
+
+    <TextView
+        android:id="@+id/tvCode"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="P001"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#333" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:text="Product Name"
+        android:textSize="12sp"
+        android:textColor="#000"
+        android:paddingStart="5dp" />
+
+    <TextView
+        android:id="@+id/tvPack"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="20s"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="#555" />
+
+    <TextView
+        android:id="@+id/tvCartonSize"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:text="42"
+        android:gravity="center"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#E91E63"
+        android:background="#FFF0F5"
+        android:padding="4dp" />
+
+</LinearLayout>

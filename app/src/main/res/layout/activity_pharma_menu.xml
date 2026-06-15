@@ -6,11 +6,13 @@
     android:orientation="vertical"
     android:background="#F8F9FA">
 
+    <!-- Professional White Header -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#27D3F5"
-        android:paddingHorizontal="16dp">
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -20,14 +22,15 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@android:drawable/ic_menu_revert"
-            app:tint="#061C6A" />
+            android:contentDescription="@string/desc_back"
+            app:tint="@color/ibnsina_blue" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Pharma Menu"
-            android:textColor="#061C6A"
+            android:text="@string/pharma_menu_title"
+            android:textColor="@color/ibnsina_blue"
             android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -42,6 +45,7 @@
             android:orientation="vertical"
             android:padding="12dp">
 
+            <!-- Card: Stock Report Update -->
             <LinearLayout
                 android:id="@+id/cardStockReport"
                 android:layout_width="match_parent"
@@ -53,30 +57,30 @@
                 android:paddingHorizontal="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
-                    app:tint="#2E7D32" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:text="Stock Report Update"
-                    android:textColor="#333333"
-                    android:textSize="17sp"
+                <ImageView 
+                    android:layout_width="35dp" 
+                    android:layout_height="35dp" 
+                    android:src="@android:drawable/ic_menu_sort_by_size" 
+                    android:contentDescription="@string/desc_menu_icon"
+                    app:tint="@color/ibnsina_blue" />
+                <TextView 
+                    android:layout_width="0dp" 
+                    android:layout_height="wrap_content" 
+                    android:layout_weight="1" 
+                    android:layout_marginStart="16dp" 
+                    android:text="@string/stock_report_update" 
+                    android:textColor="@color/ibnsina_blue" 
+                    android:textSize="17sp" 
                     android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_play"
-                    app:tint="#BDBDBD" />
+                <ImageView 
+                    android:layout_width="20dp" 
+                    android:layout_height="20dp" 
+                    android:src="@android:drawable/ic_media_play" 
+                    android:contentDescription="@string/desc_go_icon"
+                    app:tint="@color/text_gray" />
             </LinearLayout>
 
+            <!-- Card: Stock Report Manual -->
             <LinearLayout
                 android:id="@+id/cardSalesUpdate"
                 android:layout_width="match_parent"
@@ -88,30 +92,30 @@
                 android:paddingHorizontal="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@android:drawable/ic_menu_edit"
-                    app:tint="#1324A0" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:text="Stock Report Manual"
-                    android:textColor="#333333"
-                    android:textSize="17sp"
+                <ImageView 
+                    android:layout_width="35dp" 
+                    android:layout_height="35dp" 
+                    android:src="@android:drawable/ic_menu_edit" 
+                    android:contentDescription="@string/desc_menu_icon"
+                    app:tint="@color/ibnsina_blue" />
+                <TextView 
+                    android:layout_width="0dp" 
+                    android:layout_height="wrap_content" 
+                    android:layout_weight="1" 
+                    android:layout_marginStart="16dp" 
+                    android:text="@string/stock_report_manual" 
+                    android:textColor="@color/ibnsina_blue" 
+                    android:textSize="17sp" 
                     android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_play"
-                    app:tint="#BDBDBD" />
+                <ImageView 
+                    android:layout_width="20dp" 
+                    android:layout_height="20dp" 
+                    android:src="@android:drawable/ic_media_play" 
+                    android:contentDescription="@string/desc_go_icon"
+                    app:tint="@color/text_gray" />
             </LinearLayout>
 
+            <!-- Card: Short Date Tracking -->
             <LinearLayout
                 android:id="@+id/cardShortItems"
                 android:layout_width="match_parent"
@@ -123,30 +127,30 @@
                 android:paddingHorizontal="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@android:drawable/ic_dialog_alert"
-                    app:tint="#D32F2F" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:text="Short Date Traking"
-                    android:textColor="#333333"
-                    android:textSize="17sp"
+                <ImageView 
+                    android:layout_width="35dp" 
+                    android:layout_height="35dp" 
+                    android:src="@android:drawable/ic_dialog_alert" 
+                    android:contentDescription="@string/desc_menu_icon"
+                    app:tint="@color/ibnsina_red" />
+                <TextView 
+                    android:layout_width="0dp" 
+                    android:layout_height="wrap_content" 
+                    android:layout_weight="1" 
+                    android:layout_marginStart="16dp" 
+                    android:text="@string/short_date_tracking" 
+                    android:textColor="@color/ibnsina_red" 
+                    android:textSize="17sp" 
                     android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_play"
-                    app:tint="#BDBDBD" />
+                <ImageView 
+                    android:layout_width="20dp" 
+                    android:layout_height="20dp" 
+                    android:src="@android:drawable/ic_media_play" 
+                    android:contentDescription="@string/desc_go_icon"
+                    app:tint="@color/text_gray" />
             </LinearLayout>
 
+            <!-- Card: Carton QTY Update -->
             <LinearLayout
                 android:id="@+id/cardOrderList"
                 android:layout_width="match_parent"
@@ -158,31 +162,29 @@
                 android:paddingHorizontal="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    app:tint="#F57C00" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                        android:text="Carton QTY Update"
-                    android:textColor="#333333"
-                    android:textSize="17sp"
+                <ImageView 
+                    android:layout_width="35dp" 
+                    android:layout_height="35dp" 
+                    android:src="@android:drawable/ic_menu_agenda" 
+                    android:contentDescription="@string/desc_menu_icon"
+                    app:tint="@color/ibnsina_blue" />
+                <TextView 
+                    android:layout_width="0dp" 
+                    android:layout_height="wrap_content" 
+                    android:layout_weight="1" 
+                    android:layout_marginStart="16dp" 
+                    android:text="@string/carton_qty_update" 
+                    android:textColor="@color/ibnsina_blue" 
+                    android:textSize="17sp" 
                     android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_play"
-                    app:tint="#BDBDBD" />
+                <ImageView 
+                    android:layout_width="20dp" 
+                    android:layout_height="20dp" 
+                    android:src="@android:drawable/ic_media_play" 
+                    android:contentDescription="@string/desc_go_icon"
+                    app:tint="@color/text_gray" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

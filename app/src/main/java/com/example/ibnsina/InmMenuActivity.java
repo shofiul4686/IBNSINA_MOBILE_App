@@ -1,24 +1,40 @@
 package com.example.ibnsina;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.view.View;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class InmMenuActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inm_menu);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
+        // Stock Report Update - এটি HERBAL ডাটা ফিল্টার করবে
+        findViewById(R.id.cardStockReport).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("SELECTED_CATEGORY", "HERBAL");
+            startActivity(intent);
         });
+
+        // Carton QTY Update - এটি CartonUpdateActivity-তে HERBAL পাঠাবে
+        findViewById(R.id.cardOrderList).setOnClickListener(v -> {
+            Intent intent = new Intent(this, CartonUpdateActivity.class);
+            intent.putExtra("SELECTED_CATEGORY", "HERBAL");
+            startActivity(intent);
+        });
+
+        findViewById(R.id.cardSalesUpdate).setOnClickListener(v -> openWebLink("https://script.google.com/macros/s/AKfycbwIULJidE-kHC3Hzi-tczf3NS8hQC5ZX6ht0n43KybX_4zJfcBlsB3LIJdsu7m3GDGmvQ/exec"));
+        findViewById(R.id.cardShortItems).setOnClickListener(v -> openWebLink("https://script.google.com/macros/s/AKfycbz5rg_3VG0pF4u98p_najf_lubb5XHA85GzcNqrX-3aRfT-BySUlULu0l9zeEMXtdQQVA/exec"));
+    }
+
+    private void openWebLink(String url) {
+        try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
+        catch (Exception e) { Toast.makeText(this, "Could not open link", Toast.LENGTH_SHORT).show(); }
     }
 }

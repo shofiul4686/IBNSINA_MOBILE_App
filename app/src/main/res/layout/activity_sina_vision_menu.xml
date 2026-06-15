@@ -1,10 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SinaVisionMenuActivity">
+    android:orientation="vertical"
+    android:background="#F8F9FA">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Professional White Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/ibnsina_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Sina Vision Menu (Opthalmic)"
+            android:textColor="@color/ibnsina_blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Stock Report Update -->
+            <LinearLayout
+                android:id="@+id/cardStockReport"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView android:layout_width="35dp" android:layout_height="35dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="@color/ibnsina_blue" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="Stock Report Update" android:textColor="@color/ibnsina_blue" android:textSize="17sp" android:textStyle="bold" />
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" app:tint="#BDBDBD" />
+            </LinearLayout>
+
+            <!-- Stock Report Manual -->
+            <LinearLayout
+                android:id="@+id/cardSalesUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView android:layout_width="35dp" android:layout_height="35dp" android:src="@android:drawable/ic_menu_edit" app:tint="@color/ibnsina_blue" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="Stock Report Manual" android:textColor="@color/ibnsina_blue" android:textSize="17sp" android:textStyle="bold" />
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" app:tint="#BDBDBD" />
+            </LinearLayout>
+
+            <!-- Short Date Tracking -->
+            <LinearLayout
+                android:id="@+id/cardShortItems"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView android:layout_width="35dp" android:layout_height="35dp" android:src="@android:drawable/ic_dialog_alert" app:tint="@color/ibnsina_red" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="Short Date Tracking" android:textColor="@color/ibnsina_red" android:textSize="17sp" android:textStyle="bold" />
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" app:tint="#BDBDBD" />
+            </LinearLayout>
+
+            <!-- Carton QTY Update -->
+            <LinearLayout
+                android:id="@+id/cardOrderList"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView android:layout_width="35dp" android:layout_height="35dp" android:src="@android:drawable/ic_menu_agenda" app:tint="@color/ibnsina_blue" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="Carton QTY Update" android:textColor="@color/ibnsina_blue" android:textSize="17sp" android:textStyle="bold" />
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" app:tint="#BDBDBD" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

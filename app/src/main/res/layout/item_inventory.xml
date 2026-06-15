@@ -1,217 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp">
+    app:cardElevation="4dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/itemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="12dp">
 
-        <!-- Serial Number View -->
         <TextView
             android:id="@+id/tvSl"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="@drawable/bg_serial_circle"
+            android:backgroundTint="@color/ibnsina_blue"
             android:gravity="center"
             android:text="1"
-            android:textColor="#000000"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/ibnsina_blue"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:layout_gravity="top"
-            android:layout_marginEnd="12dp" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvSl"
+            app:layout_constraintEnd_toStartOf="@+id/tvCode"
+            app:layout_constraintStart_toEndOf="@+id/tvSl"
+            app:layout_constraintTop_toTopOf="@+id/tvSl"
+            tools:text="PHARMA" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvCode"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:textColor="@color/ibnsina_red"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvSl"
+            tools:text="P001" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tvCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#27D3F5"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/tvCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:textColor="#D32F2F"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSl"
+            tools:text="SINACEPH CAP 250 MG" />
+
+        <TextView
+            android:id="@+id/tvPackSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_gray"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvCartonSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvProductName"
+            tools:text="Pack size: 20s" />
+
+        <TextView
+            android:id="@+id/tvCartonSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ibnsina_blue"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPackSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvPackSize"
+            tools:text="Carton: 42" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#EEEEEE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPackSize" />
+
+        <TextView
+            android:id="@+id/tvLoose"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvCarton"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            tools:text="Loose: 5" />
+
+        <TextView
+            android:id="@+id/tvCarton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLoose"
+            app:layout_constraintEnd_toStartOf="@+id/tvTotalQty"
+            app:layout_constraintStart_toEndOf="@+id/tvLoose"
+            app:layout_constraintTop_toTopOf="@+id/tvLoose"
+            tools:text="Carton: 2" />
+
+        <TextView
+            android:id="@+id/tvTotalQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/ibnsina_blue"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLoose"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvCarton"
+            app:layout_constraintTop_toTopOf="@+id/tvLoose"
+            tools:text="Total: 89" />
+
+        <!-- Short + Excess + Checkbox একই লাইনে -->
+        <LinearLayout
+            android:id="@+id/rowShortExcess"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLoose">
 
             <TextView
-                android:id="@+id/tvProductName"
-                android:layout_width="match_parent"
+                android:id="@+id/lblShort"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="#000000"
-                android:textSize="18sp"
+                android:text="Short: "
+                android:textColor="@color/black"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/etShortQty"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tvPackSize"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="#333333" />
-                <TextView
-                    android:id="@+id/tvCartonSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#1B5E20"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:backgroundTint="@color/ibnsina_red"
+                android:hint="Qty"
+                android:inputType="number"
+                android:textColor="@color/ibnsina_red"
+                android:textSize="14sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="10dp"
-                android:background="#CCCCCC" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/lblExcess"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:weightSum="3"
-                android:gravity="center_vertical">
+                android:layout_marginStart="16dp"
+                android:text="Excss: "
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvLoose"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvCarton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="#000000"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvTotalQty"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="#1B5E20"
-                    android:textStyle="bold"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/etExcessQty"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:backgroundTint="@color/ibnsina_blue"
+                android:hint="Qty"
+                android:inputType="number"
+                android:textColor="@color/ibnsina_blue"
+                android:textSize="14sp" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Short: "
-                        android:textColor="#000000"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                    <EditText
-                        android:id="@+id/etShortQty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#000000"
-                        android:hint="Type"
-                        android:inputType="number"
-                        android:textColor="#000000"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Excss: "
-                        android:textColor="#000000"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                    <EditText
-                        android:id="@+id/etExcessQty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Type"
-                        android:inputType="number"
-                        android:backgroundTint="#000000"
-                        android:textColor="#000000"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <CheckBox
-                    android:id="@+id/btnCheckUpdate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="1.2"
-                    android:scaleY="1.2"
-                    android:buttonTint="#1B5E20" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <CheckBox
+                android:id="@+id/btnCheckUpdate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remark: "
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-                <EditText
-                    android:id="@+id/etRemark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Write here..."
-                    android:backgroundTint="#000000"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                android:layout_marginStart="8dp"
+                android:buttonTint="@color/ibnsina_blue"
+                android:scaleX="1.2"
+                android:scaleY="1.2" />
+
         </LinearLayout>
-    </LinearLayout>
+
+        <!-- Remark -->
+        <LinearLayout
+            android:id="@+id/rowRemark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rowShortExcess">
+
+            <TextView
+                android:id="@+id/lblRemark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remark: "
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etRemark"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:backgroundTint="@color/ibnsina_blue"
+                android:hint="Write note..."
+                android:textColor="@color/ibnsina_blue"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

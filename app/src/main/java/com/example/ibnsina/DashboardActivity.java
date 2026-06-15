@@ -6,56 +6,38 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 public class DashboardActivity extends AppCompatActivity {
-
-    private TextView tvUserName, tvUserDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // ভিউ কানেক্ট করা
-        tvUserName = findViewById(R.id.tvUserName);
-        tvUserDetails = findViewById(R.id.tvUserDetails);
+        TextView tvUserName = findViewById(R.id.tvUserName);
+        TextView tvUserDetails = findViewById(R.id.tvUserDetails);
 
-        // সেশন থেকে ডাটা নিয়ে আসা
         SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
-        String name = prefs.getString("userName", "User");
-        String id = prefs.getString("userId", "N/A");
-        String desig = prefs.getString("designation", "N/A");
+        tvUserName.setText(prefs.getString("userName", "User"));
+        tvUserDetails.setText("ID: " + prefs.getString("userId", "N/A") + " | " + prefs.getString("designation", "N/A"));
 
-        // ডাটা স্ক্রিনে দেখানো
-        tvUserName.setText(name);
-        tvUserDetails.setText("ID: " + id + " | " + desig);
+        // মেনু বাটনগুলো কানেক্ট করা
+        findViewById(R.id.cardPharma).setOnClickListener(v -> startActivity(new Intent(this, PharmaMenuActivity.class)));
+        findViewById(R.id.cardSinaVision).setOnClickListener(v -> startActivity(new Intent(this, SinaVisionMenuActivity.class)));
+        findViewById(R.id.cardINM).setOnClickListener(v -> startActivity(new Intent(this, InmMenuActivity.class)));
+        
+        // নতুন DATA UPLOAD বাটন
+        findViewById(R.id.cardDataUpload).setOnClickListener(v -> startActivity(new Intent(this, DataUploadActivity.class)));
 
-        // কার্ডগুলো সেটআপ
-        CardView cardPharma = findViewById(R.id.cardPharma);
-        CardView cardSinaVision = findViewById(R.id.cardSinaVision);
-        CardView cardINM = findViewById(R.id.cardINM);
-        CardView cardSetting = findViewById(R.id.cardSetting);
-        CardView cardAbout = findViewById(R.id.cardAbout);
-        CardView cardLogout = findViewById(R.id.cardLogout);
-
-        cardPharma.setOnClickListener(v -> startActivity(new Intent(this, PharmaMenuActivity.class)));
-        cardSinaVision.setOnClickListener(v -> startActivity(new Intent(this, SinaVisionMenuActivity.class)));
-        cardINM.setOnClickListener(v -> startActivity(new Intent(this, InmMenuActivity.class)));
-        cardSetting.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
-
-        cardAbout.setOnClickListener(v ->
+        findViewById(R.id.cardSetting).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        
+        findViewById(R.id.cardAbout).setOnClickListener(v -> 
                 Toast.makeText(this, "IBN SINA Inventory System v1.0", Toast.LENGTH_SHORT).show());
 
-        cardLogout.setOnClickListener(v -> {
-            SharedPreferences preferences = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
-            preferences.edit().clear().apply();
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+        findViewById(R.id.cardLogout).setOnClickListener(v -> {
+            getSharedPreferences("USER_SESSION", MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
-            Toast.makeText(this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
         });
     }
 }
