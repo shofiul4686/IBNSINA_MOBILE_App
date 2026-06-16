@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "879962605426",
+    "firebase_url": "https://shofiul4686-default-rtdb.firebaseio.com",
+    "project_id": "shofiul4686",
+    "storage_bucket": "shofiul4686.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879962605426:android:d1a1336d59b786a864bfeb",
+        "android_client_info": {
+          "package_name": "com.example.ibnsina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879962605426-6ralb9j92pak1n53q0kp7k6d4r22nhv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa5xiLvLWWLNkHf8tggx0LcVpwrwZVFZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879962605426-6ralb9j92pak1n53q0kp7k6d4r22nhv4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
