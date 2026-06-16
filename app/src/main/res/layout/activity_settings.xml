@@ -13,19 +13,6 @@
         android:background="@drawable/header_gradient"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_revert"
-        app:tint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="Back" />
-
     <!-- Title and Illustration Placeholder -->
     <LinearLayout
         android:id="@+id/titleLayout"
@@ -81,7 +68,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="24dp" />
 
-            <!-- Current Password -->
+            <!-- Input Fields... (পাসওয়ার্ড ফিল্ডগুলো অপরিবর্তিত) -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -89,21 +76,14 @@
                 android:hint="বর্তমান পাসওয়ার্ড"
                 app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
                 app:endIconMode="password_toggle"
-                app:boxStrokeColor="#7B1FA2"
-                app:hintTextColor="#7B1FA2"
-                app:startIconTint="#7B1FA2"
                 android:layout_marginBottom="16dp">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etOldPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:textColor="#212121"
-                    android:textSize="16sp" />
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- New Password -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -111,21 +91,14 @@
                 android:hint="নতুন পাসওয়ার্ড"
                 app:startIconDrawable="@android:drawable/ic_lock_lock"
                 app:endIconMode="password_toggle"
-                app:boxStrokeColor="#7B1FA2"
-                app:hintTextColor="#7B1FA2"
-                app:startIconTint="#7B1FA2"
                 android:layout_marginBottom="16dp">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:textColor="#212121"
-                    android:textSize="16sp" />
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Confirm New Password -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -133,21 +106,14 @@
                 android:hint="পুনরায় নতুন পাসওয়ার্ড"
                 app:startIconDrawable="@android:drawable/ic_lock_lock"
                 app:endIconMode="password_toggle"
-                app:boxStrokeColor="#7B1FA2"
-                app:hintTextColor="#7B1FA2"
-                app:startIconTint="#7B1FA2"
                 android:layout_marginBottom="32dp">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:textColor="#212121"
-                    android:textSize="16sp" />
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Update Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdatePass"
                 android:layout_width="match_parent"
@@ -157,10 +123,31 @@
                 android:textStyle="bold"
                 android:backgroundTint="#7B1FA2"
                 android:textColor="#FFFFFF"
-                app:cornerRadius="15dp"
-                app:elevation="8dp" />
+                app:cornerRadius="15dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Bottom Back Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:padding="8dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="BACK TO HOME"
+            android:textColor="@color/ibnsina_blue"
+            app:icon="@android:drawable/ic_menu_revert"
+            app:iconGravity="textStart"
+            app:cornerRadius="25dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

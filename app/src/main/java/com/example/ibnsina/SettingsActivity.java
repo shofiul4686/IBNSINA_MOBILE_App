@@ -1,6 +1,5 @@
 package com.example.ibnsina;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +23,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        // Firebase reference matching your image
         mDatabase = FirebaseDatabase.getInstance().getReference("Emp_Password");
 
         etOldPass = findViewById(R.id.etOldPass);
@@ -32,13 +30,15 @@ public class SettingsActivity extends AppCompatActivity {
         etConfirmPass = findViewById(R.id.etConfirmPass);
         btnUpdatePass = findViewById(R.id.btnUpdatePass);
 
+        // নিচের ব্যাক বাটন লজিক
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
         btnUpdatePass.setOnClickListener(v -> {
             String oldPass = etOldPass.getText().toString().trim();
             String newPass = etNewPass.getText().toString().trim();
             String confirmPass = etConfirmPass.getText().toString().trim();
 
-            SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
-            String firebaseKey = prefs.getString("firebaseKey", "");
+            String firebaseKey = getSharedPreferences("USER_SESSION", MODE_PRIVATE).getString("firebaseKey", "");
 
             if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
                 Toast.makeText(this, "সবগুলো ঘর পূরণ করুন", Toast.LENGTH_SHORT).show();
@@ -67,12 +67,10 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Fetching PASSWORD field (matches your image)
                     Object passObj = snapshot.child("PASSWORD").getValue();
                     String dbPassword = (passObj != null) ? passObj.toString() : "";
 
                     if (dbPassword.equals(oldPass)) {
-                        // Updating PASSWORD field
                         mDatabase.child(firebaseKey).child("PASSWORD").setValue(newPass)
                                 .addOnSuccessListener(aVoid -> {
                                     btnUpdatePass.setEnabled(true);
@@ -95,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     btnUpdatePass.setEnabled(true);
                     btnUpdatePass.setText("Update Password");
-                    Toast.makeText(SettingsActivity.this, "ইউজার ডেটা পাওয়া যায়নি!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "ইউজার ডাটা পাওয়া যায়নি!", Toast.LENGTH_SHORT).show();
                 }
             }
 

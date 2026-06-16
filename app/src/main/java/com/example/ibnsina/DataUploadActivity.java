@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,10 +37,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DataUploadActivity extends AppCompatActivity {
 
@@ -78,19 +75,15 @@ public class DataUploadActivity extends AppCompatActivity {
         );
 
         btnSelectFile.setOnClickListener(v -> {
-            // ১. সেশন থেকে বর্তমান ইউজারের আইডি নেওয়া
             SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
             String sessionUserId = prefs.getString("userId", "");
 
-            // ২. নিরাপত্তা চেক: আইডি অবশ্যই IPI-004686 হতে হবে
             if (sessionUserId.equalsIgnoreCase("IPI-004686")) {
-                // আইডি মিলেছে, সরাসরি ফাইল পিকার ওপেন হবে (পাসওয়ার্ড ছাড়াই)
                 openFilePicker();
             } else {
-                // আইডি না মিললে এক্সেস ডিনাইড দেখাবে
                 new AlertDialog.Builder(this)
                         .setTitle("Access Denied")
-                        .setMessage("দুঃখিত, আপনার আইডি (" + sessionUserId + ") ডাটা আপলোড করার জন্য অনুমোদিত নয়। শুধুমাত্র নির্দিষ্ট অ্যাডমিন এই কাজ করতে পারবেন।")
+                        .setMessage("দুঃখিত, আপনার আইডি (" + sessionUserId + ") ডাটা আপলোড করার জন্য অনুমোদিত নয়।")
                         .setPositiveButton("OK", null)
                         .show();
             }
@@ -128,8 +121,15 @@ public class DataUploadActivity extends AppCompatActivity {
                 String[] row = allRows.get(i);
                 for (int j = 0; j < row.length; j++) {
                     String cell = row[j].trim().toLowerCase().replace("\"", "");
+                    
                     if (cell.equals("item id") || cell.equals("item_id") || cell.contains("code")) idIndex = j;
-                    if (cell.contains("stock") || cell.contains("qty")) stockIndex = j;
+                    
+                    if (cell.equals("sales stock") || cell.contains("sales_stock")) {
+                        stockIndex = j;
+                    } else if (stockIndex == -1 && (cell.contains("stock") || cell.contains("qty"))) {
+                        stockIndex = j;
+                    }
+
                     if (cell.equals("category")) catIndex = j;
                     if (cell.contains("product name") || cell.equals("name")) nameIndex = j;
                     if (cell.contains("pack size") || cell.equals("pack_size")) packIndex = j;
@@ -139,7 +139,7 @@ public class DataUploadActivity extends AppCompatActivity {
             }
 
             if (headerRowIndex == -1) {
-                tvStatus.setText("Error: Required CSV Columns not found!");
+                tvStatus.setText("Error: 'Sales Stock' or required columns not found!");
                 return;
             }
 
@@ -155,7 +155,7 @@ public class DataUploadActivity extends AppCompatActivity {
                     if (!id.isEmpty()) parsedData.add(new CSVRow(id, stock, cat, name, pack, carton));
                 }
             }
-            tvStatus.setText("File Loaded: " + parsedData.size() + " items found.");
+            tvStatus.setText("File Loaded: " + parsedData.size() + " items found using 'Sales Stock' column.");
             btnSync.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -192,12 +192,13 @@ public class DataUploadActivity extends AppCompatActivity {
                     }
                 }
 
-                final int finalUpdatedCount = matched;
+                final int finalMatched = matched;
+
                 if (!updates.isEmpty()) {
                     mDatabase.updateChildren(updates).addOnCompleteListener(task -> {
                         progressBar.setVisibility(View.GONE);
                         btnSync.setEnabled(true);
-                        showSyncSummaryDialog(finalUpdatedCount, notFoundList);
+                        showSyncSummaryDialog(finalMatched, notFoundList);
                     });
                 } else {
                     progressBar.setVisibility(View.GONE);
