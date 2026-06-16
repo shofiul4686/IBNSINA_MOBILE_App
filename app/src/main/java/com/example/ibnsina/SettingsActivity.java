@@ -1,26 +1,32 @@
 package com.example.ibnsina;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    // ফিল্ডগুলো ডিক্লেয়ার করা
     EditText etOldPass, etNewPass, etConfirmPass;
     Button btnUpdatePass;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        // ভিউগুলো কানেক্ট করা
+        // Firebase reference matching your image
+        mDatabase = FirebaseDatabase.getInstance().getReference("Emp_Password");
+
         etOldPass = findViewById(R.id.etOldPass);
         etNewPass = findViewById(R.id.etNewPass);
         etConfirmPass = findViewById(R.id.etConfirmPass);
@@ -31,43 +37,74 @@ public class SettingsActivity extends AppCompatActivity {
             String newPass = etNewPass.getText().toString().trim();
             String confirmPass = etConfirmPass.getText().toString().trim();
 
-            // ইউজার সেশন থেকে আইডি নেওয়া
-            String userId = getSharedPreferences("USER_SESSION", MODE_PRIVATE).getString("userId", "");
+            SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
+            String firebaseKey = prefs.getString("firebaseKey", "");
 
-            // ১. খালি ঘর চেক করা
             if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
                 Toast.makeText(this, "সবগুলো ঘর পূরণ করুন", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // ২. নতুন পাসওয়ার্ড ও কনফার্ম পাসওয়ার্ড চেক করা
             if (!newPass.equals(confirmPass)) {
                 etConfirmPass.setError("পাসওয়ার্ড মিলছে না!");
                 return;
             }
 
-            // ৩. সার্ভার URL তৈরি (এখানে oldPass-ও পাঠানো হচ্ছে নিরাপত্তার জন্য)
-            String url = Config.SCRIPT_URL + "?action=changePassword" +
-                    "&userId=" + userId +
-                    "&oldPass=" + oldPass +
-                    "&newPass=" + newPass;
+            if (firebaseKey.isEmpty()) {
+                Toast.makeText(this, "সেশন এরর! আবার লগইন করুন।", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // ৪. ভলি (Volley) রিকোয়েস্ট পাঠানো
-            StringRequest request = new StringRequest(Request.Method.GET, url,
-                    response -> {
-                        if (response.contains("Success")) {
-                            Toast.makeText(SettingsActivity.this, "পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
-                            // আপডেট হয়ে গেলে ঘরগুলো খালি করে দেওয়া
-                            etOldPass.setText("");
-                            etNewPass.setText("");
-                            etConfirmPass.setText("");
-                        } else {
-                            Toast.makeText(SettingsActivity.this, "পুরাতন পাসওয়ার্ড ভুল!", Toast.LENGTH_SHORT).show();
-                        }
-                    },
-                    error -> Toast.makeText(SettingsActivity.this, "সার্ভার এরর!", Toast.LENGTH_SHORT).show());
+            updatePasswordInFirebase(firebaseKey, oldPass, newPass);
+        });
+    }
 
-            Volley.newRequestQueue(this).add(request);
+    private void updatePasswordInFirebase(String firebaseKey, String oldPass, String newPass) {
+        btnUpdatePass.setEnabled(false);
+        btnUpdatePass.setText("Updating...");
+
+        mDatabase.child(firebaseKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Fetching PASSWORD field (matches your image)
+                    Object passObj = snapshot.child("PASSWORD").getValue();
+                    String dbPassword = (passObj != null) ? passObj.toString() : "";
+
+                    if (dbPassword.equals(oldPass)) {
+                        // Updating PASSWORD field
+                        mDatabase.child(firebaseKey).child("PASSWORD").setValue(newPass)
+                                .addOnSuccessListener(aVoid -> {
+                                    btnUpdatePass.setEnabled(true);
+                                    btnUpdatePass.setText("Update Password");
+                                    Toast.makeText(SettingsActivity.this, "পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
+                                    etOldPass.setText("");
+                                    etNewPass.setText("");
+                                    etConfirmPass.setText("");
+                                })
+                                .addOnFailureListener(e -> {
+                                    btnUpdatePass.setEnabled(true);
+                                    btnUpdatePass.setText("Update Password");
+                                    Toast.makeText(SettingsActivity.this, "আপডেট করতে সমস্যা হয়েছে!", Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        btnUpdatePass.setEnabled(true);
+                        btnUpdatePass.setText("Update Password");
+                        Toast.makeText(SettingsActivity.this, "পুরাতন পাসওয়ার্ড ভুল!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    btnUpdatePass.setEnabled(true);
+                    btnUpdatePass.setText("Update Password");
+                    Toast.makeText(SettingsActivity.this, "ইউজার ডেটা পাওয়া যায়নি!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                btnUpdatePass.setEnabled(true);
+                btnUpdatePass.setText("Update Password");
+                Toast.makeText(SettingsActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
