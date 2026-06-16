@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.text.Editable;
@@ -23,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,10 +75,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean loadingState = false;
     private DatabaseReference mDatabase;
 
+    // Calculator Variables
     private String currentInput = "";
-    private String currentExpressionText = "";
-    private double calcResult = 0;
-    private char lastOperator = ' ';
+    private double firstOperand = Double.NaN;
+    private String pendingOperator = "";
+    private TextView tvCalcResult, tvCalcExpression;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
             if (matchesSearch && matchesFilter) filteredList.add(item);
         }
 
-        // গুরুত্বপূর্ণ: সার্চ বা ফিল্টার করার পর সিরিয়াল নম্বর ১, ২, ৩... সেট করা
         for (int i = 0; i < filteredList.size(); i++) {
             filteredList.get(i).setSl(String.valueOf(i + 1));
         }
@@ -269,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.getWindow().setAttributes(wlp);
         }
         dialog.show();
-        new Handler().postDelayed(dialog::dismiss, 600);
+        new Handler(Looper.getMainLooper()).postDelayed(dialog::dismiss, 600);
     }
 
     private void showGoToPageDialog() {
@@ -325,7 +328,93 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCalculatorDialog() {
-        Toast.makeText(this, "Calculator Coming Soon", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View v = getLayoutInflater().inflate(R.layout.dialog_calculator, null);
+        builder.setView(v);
+        
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        tvCalcResult = v.findViewById(R.id.tvCalcResult);
+        tvCalcExpression = v.findViewById(R.id.tvCalcExpression);
+        Button btnClose = v.findViewById(R.id.btnCalcClose);
+        
+        currentInput = "";
+        firstOperand = Double.NaN;
+        pendingOperator = "";
+        
+        btnClose.setOnClickListener(view -> dialog.dismiss());
+
+        // সংশোধিত কোড: সরাসরি আইডি দিয়ে GridLayout খুঁজে নেওয়া
+        GridLayout grid = v.findViewById(R.id.gridCalculator);
+
+        if (grid != null) {
+            for (int i = 0; i < grid.getChildCount(); i++) {
+                View child = grid.getChildAt(i);
+                if (child instanceof Button) {
+                    Button b = (Button) child;
+                    b.setOnClickListener(view -> onCalcButtonClick(b.getText().toString()));
+                }
+            }
+        }
+        dialog.show();
+    }
+
+    private void onCalcButtonClick(String text) {
+        switch (text) {
+            case "C":
+                currentInput = "";
+                firstOperand = Double.NaN;
+                pendingOperator = "";
+                tvCalcExpression.setText("");
+                tvCalcResult.setText("0");
+                break;
+            case "DEL":
+                if (currentInput.length() > 0) {
+                    currentInput = currentInput.substring(0, currentInput.length() - 1);
+                    tvCalcResult.setText(currentInput.isEmpty() ? "0" : currentInput);
+                }
+                break;
+            case "=":
+                compute();
+                pendingOperator = "";
+                break;
+            case "+": case "-": case "*": case "/": case "%":
+                compute();
+                pendingOperator = text;
+                tvCalcExpression.setText(formatResult(firstOperand) + " " + text);
+                currentInput = "";
+                break;
+            default: // Numbers and dot
+                currentInput += text;
+                tvCalcResult.setText(currentInput);
+                break;
+        }
+    }
+
+    private void compute() {
+        if (!currentInput.isEmpty()) {
+            double secondOperand = Double.parseDouble(currentInput);
+            if (Double.isNaN(firstOperand)) {
+                firstOperand = secondOperand;
+            } else {
+                switch (pendingOperator) {
+                    case "+": firstOperand += secondOperand; break;
+                    case "-": firstOperand -= secondOperand; break;
+                    case "*": firstOperand *= secondOperand; break;
+                    case "/": firstOperand /= secondOperand; break;
+                    case "%": firstOperand %= secondOperand; break;
+                }
+            }
+            tvCalcResult.setText(formatResult(firstOperand));
+            currentInput = "";
+        }
+    }
+
+    private String formatResult(double d) {
+        if (Double.isNaN(d)) return "0";
+        if (d == (long) d) return String.format(Locale.US, "%d", (long) d);
+        return new DecimalFormat("0.######").format(d);
     }
 
     public void setLoading(boolean l) { if (progressBar != null) progressBar.setVisibility(l ? View.VISIBLE : View.GONE); }

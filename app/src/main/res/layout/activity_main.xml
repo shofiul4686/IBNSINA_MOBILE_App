@@ -132,7 +132,11 @@
             android:text="Sync"
             android:textColor="@color/white"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_sync"
+            app:iconSize="16dp"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnResetAll"
@@ -144,7 +148,11 @@
             android:text="Reset"
             android:textColor="@color/white"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_reset"
+            app:iconSize="16dp"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrint"
@@ -156,7 +164,11 @@
             android:text="Print"
             android:textColor="@color/white"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_print"
+            app:iconSize="16dp"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalculator"
@@ -168,7 +180,12 @@
             android:text="Calc"
             android:textColor="@color/white"
             android:textSize="10sp"
-            app:cornerRadius="8dp" />
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_calculator"
+            app:iconTint="@color/white"
+            app:iconSize="16dp"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp"/>
     </LinearLayout>
 
     <!-- Main List Container -->
